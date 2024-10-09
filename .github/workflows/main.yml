@@ -28,7 +28,6 @@ jobs:
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     
     - name: Start LocalTunnel
-      run: lt --port 3389 --subdomain iceostore.my.id
-
+      run: lt --port 3389 --subdomain https://iTeam.lt.com
     - name: Display LocalTunnel URL
       run: echo "Tunnel created. Use the following URL to connect to the RDP session:"
