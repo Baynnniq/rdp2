@@ -30,9 +30,13 @@ jobs:
     - name: Start LocalTunnel
       id: start_localtunnel
       run: |
-        lt --port 3389 --subdomain iTeam > tunnel.log 2>&1 &
+        lt --port 3389 --subdomain iTeam > tunnel.log 2>&1
         echo "Tunnel created. Use the following URL to connect to the RDP session: http://iTeam.loca.lt"
+
+    - name: Wait for Tunnel to Initialize
+      run: |
+        sleep 10  # Tunggu beberapa detik agar tunnel dapat dimulai dengan baik
 
     - name: Display LocalTunnel Output
       run: |
-        cat tunnel.log
+        Get-Content tunnel.log
