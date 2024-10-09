@@ -25,16 +25,8 @@ jobs:
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
 
     - name: Set RDP User Password
-      run: |
-        $username = "iCeo"
-        $password = ConvertTo-SecureString -AsPlainText "iceostore" -Force
-        If (-Not (Get-LocalUser -Name $username)) {
-          New-LocalUser -Name $username -Password $password
-          Add-LocalGroupMember -Group "Administrators" -Member $username
-        } else {
-          Set-LocalUser -Name $username -Password $password
-        }
-
+      run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+    
     - name: Start LocalTunnel
       run: lt --port 3389 --subdomain mycustomsubdomain
 
