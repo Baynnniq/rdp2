@@ -28,7 +28,8 @@ jobs:
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
     - name: Start LocalTunnel
-      run: lt --port 3389 --subdomain yoursubdomain
+      id: start_localtunnel
+      run: lt --port 3389 --subdomain mycustomsubdomain --verbose
 
     - name: Display LocalTunnel URL
-      run: echo "Tunnel created. Use the following URL to connect to the RDP session: yoursubdomain.loca.lt"
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session: http://mycustomsubdomain.loca.lt"
