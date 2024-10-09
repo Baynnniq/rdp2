@@ -25,10 +25,15 @@ jobs:
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
 
     - name: Set RDP User Password
-      run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+      run: Set-LocalUser -Name "iCeo" -Password (ConvertTo-SecureString -AsPlainText "iceostore" -Force)
     
     - name: Start LocalTunnel
-      run: lt --port 3389 --subdomain mycustomsubdomain
+      id: start_localtunnel
+      run: |
+        lt --port 3389 --subdomain mycustomsubdomain --verbose > lt_output.txt &
+        sleep 5
+        cat lt_output.txt | grep "your url is" | cut -d' ' -f3 > url.txt
+        echo "::set-output name=url::$(<url.txt)"
 
     - name: Display LocalTunnel URL
-      run: echo "Tunnel created. Use the following URL to connect to the RDP session:"
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session: ${{ steps.start_localtunnel.outputs.url }}"
