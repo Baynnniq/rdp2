@@ -32,10 +32,12 @@ jobs:
       run: |
         lt --port 3389 --subdomain mycustomsubdomain > lt_output.txt &
         sleep 5
-        # Extract the URL from the output and set it as an output variable
-        url=$(grep 'your url is' lt_output.txt | awk '{print $NF}')
+        # Extract the URL from the output and save to a file
+        grep 'your url is' lt_output.txt | awk '{print $NF}' > url.txt
+        # Read the URL from the file
+        url=$(<url.txt)
         echo "Tunnel URL: $url"
-        echo "::set-output name=url::$url"
+        echo "url=$url" >> $GITHUB_ENV
 
     - name: Display LocalTunnel URL
-      run: echo "Tunnel created. Use the following URL to connect to the RDP session: ${{ steps.start_localtunnel.outputs.url }}"
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session: $url"
