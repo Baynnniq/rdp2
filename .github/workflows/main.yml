@@ -7,13 +7,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download Node.js
+    - name: Install Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
 
-    - name: Install Pagekite
-      run: npm install -g pagekite
+    - name: Install LocalTunnel
+      run: npm install -g localtunnel
 
     - name: Enable TS (Remote Desktop)
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
@@ -21,11 +21,14 @@ jobs:
     - name: Enable Firewall Rule for Remote Desktop
       run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
+    - name: Allow User RDP Authentication
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
     - name: Set RDP User Password
-      run: Set-LocalUser -Name "iCeo" -Password (ConvertTo-SecureString -AsPlainText "iceostore" -Force)
+      run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
-    - name: Start Pagekite
-      run: pagekite.py 3389 yoursubdomain.pagekite.me
+    - name: Start LocalTunnel
+      run: lt --port 3389 --subdomain yoursubdomain
 
-    - name: Display Pagekite URL
-      run: echo "Tunnel created. Use the following URL to connect to the RDP session: yoursubdomain.pagekite.me"
+    - name: Display LocalTunnel URL
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session: yoursubdomain.loca.lt"
