@@ -1,0 +1,42 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Download Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+      
+    - name: Install LocalTunnel
+      run: npm install -g localtunnel
+
+    - name: Enable TS (Remote Desktop)
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+    
+    - name: Enable Firewall Rule for Remote Desktop
+      run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    
+    - name: Allow User RDP Authentication
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
+    - name: Set RDP User Password
+      run: |
+        $username = "iCeo"
+        $password = ConvertTo-SecureString -AsPlainText "iceostore" -Force
+        If (-Not (Get-LocalUser -Name $username)) {
+          New-LocalUser -Name $username -Password $password
+          Add-LocalGroupMember -Group "Administrators" -Member $username
+        } else {
+          Set-LocalUser -Name $username -Password $password
+        }
+
+    - name: Start LocalTunnel
+      run: lt --port 3389 --subdomain mycustomsubdomain
+
+    - name: Display LocalTunnel URL
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session:"
