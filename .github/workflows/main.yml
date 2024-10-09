@@ -32,10 +32,10 @@ jobs:
       run: |
         lt --port 3389 --subdomain mycustomsubdomain > lt_output.txt &
         sleep 5
-        # Wait for the output to stabilize
-        cat lt_output.txt
         # Extract the URL from the output and set it as an output variable
-        echo "::set-output name=url::$(grep 'your url is' lt_output.txt | awk '{print $NF}')"
+        url=$(grep 'your url is' lt_output.txt | awk '{print $NF}')
+        echo "Tunnel URL: $url"
+        echo "::set-output name=url::$url"
 
     - name: Display LocalTunnel URL
       run: echo "Tunnel created. Use the following URL to connect to the RDP session: ${{ steps.start_localtunnel.outputs.url }}"
